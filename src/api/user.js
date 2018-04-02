@@ -64,10 +64,10 @@ export default ({ config }) => {
 
   router.post('/authenticate', async ({ body }, res) => {
     try {
-      if (body.password === null || body.email === null) {
+      if (body.password === null || body.cpf === null) {
         res.status(400).end(); // Status code 400: Bad request
       } else {
-        const users = await User.filter({ email: body.email }).run();
+        const users = await User.filter({ cpf: body.cpf }).run();
         const user = users[0];
         if (user) {
           // const isEqualPass = await bcrypt.compare(body.password, user.password);
