@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    links:
+      - rethink
+    volumes:
+      - ./src:/app/src
+      - ./.eslintrc.js:/app/.eslintrc.js
+      - ./package.json:/app/package.json
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=rethink
+      - NODE_ENV=development
+    depends_on:
+      - rethink
+  rethink:
+    image: rethinkdb:latest
+    ports:
+      - "28015:28015"
+      - "8080:8080"
