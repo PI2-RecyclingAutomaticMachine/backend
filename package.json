@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "nodemon -w src --exec npm run devcheck",
     "start": "nodemon -w src --exec npm run devcheck",
+    "seed": "babel-node src/seed.js",
     "devcheck": "eslint --ext .js src && babel-node src/server.js || true",
     "lint": "eslint --ext .js src || true",
     "lint:fix": "eslint --ext .js src --fix || true"
