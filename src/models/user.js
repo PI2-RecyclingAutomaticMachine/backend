@@ -5,6 +5,7 @@ const User = thinky.createModel('Users', {
   name: type.string(),
   email: type.string(),
   cpf: type.string(),
+  pointsUsed: type.number().default(0),
   password: type.string(),
 });
 

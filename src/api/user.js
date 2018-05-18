@@ -115,6 +115,16 @@ export default ({ config }) => {
     }
   });
 
+  router.post('/cpf', async ({ body }, res) => {
+    try {
+      const { cpf } = body;
+      const cpfFilter = doc => doc('cpf').match(cpf);
+      res.json((await User.filter(cpfFilter))[0]);
+    } catch (err) {
+      res.status(404).json({ error: err });
+    }
+  });
+
   // router.post('/register_socket',
   //              jwtCheck({secret: config.secret}), async ({ body, user }, res) => {
   //   try {
