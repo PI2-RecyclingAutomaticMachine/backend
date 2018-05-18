@@ -1,6 +1,7 @@
 import { version } from '../../package.json';
 import { Router } from 'express';
 import userRouter from './user';
+import bottleRouter from './bottle';
 // import config from '../config'
 // import jwt from 'express-jwt'
 
@@ -23,8 +24,10 @@ export default ({ config, db }) => {
 
   // Add model routes
   const users = userRouter({ config, db });
+  const bottles = bottleRouter({ config, db });
   // api.use('/', jwtCheck)
   api.use('/user', users);
+  api.use('/bottle', bottles);
 
   api.get('/', (req, res) => {
     res.json({ version });
