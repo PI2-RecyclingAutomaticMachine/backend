@@ -2,6 +2,7 @@ import { version } from '../../package.json';
 import { Router } from 'express';
 import userRouter from './user';
 import bottleRouter from './bottle';
+import userOperationRouter from './user_operation';
 // import config from '../config'
 // import jwt from 'express-jwt'
 
@@ -28,6 +29,7 @@ export default ({ config, db }) => {
   // api.use('/', jwtCheck)
   api.use('/user', users);
   api.use('/bottle', bottles);
+  users.use('/:user/operation', userOperationRouter({ config, db }));
 
   api.get('/', (req, res) => {
     res.json({ version });
