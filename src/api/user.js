@@ -47,7 +47,7 @@ export default ({ config }) => {
       res.json(await userDocument.without('password').getJoin({
         operations: {
           registers: {
-            bottles: true,
+            bottle: true,
           },
         },
       }));
