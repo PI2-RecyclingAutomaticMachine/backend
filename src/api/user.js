@@ -44,7 +44,13 @@ export default ({ config }) => {
 
   router.get('/:user', async ({ userDocument }, res) => {
     try {
-      res.json(await userDocument.without('password'));
+      res.json(await userDocument.without('password').getJoin({
+        operations: {
+          registers: {
+            bottles: true,
+          },
+        },
+      }));
     } catch (err) {
       res.status(404).json({ error: err.name });
     }

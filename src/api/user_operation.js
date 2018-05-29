@@ -1,6 +1,5 @@
 import { Router } from 'express';
 
-import User from '../models/user';
 import Operation from '../models/operation';
 import Bottle from '../models/bottle';
 import BottleRegister from '../models/bottle_register';
@@ -8,7 +7,7 @@ import BottleRegister from '../models/bottle_register';
 async function registerBottle(bottle, operation) {
   const { count } = bottle;
   const [bottleDocument, bottleRegister] = await Promise.all([
-    await Bottle.find(bottle.id),
+    await Bottle.get(bottle.id),
     await BottleRegister.save({ count }),
   ]);
   await Promise.all([
@@ -27,8 +26,7 @@ export default () => {
 
   router.get('/', async ({ userDocument }, res) => {
     try {
-      const { id } = userDocument;
-      const user = await User.get(id).getJoin({
+      const user = await userDocument.getJoin({
         operations: {
           registers: {
             bottles: true,
@@ -36,7 +34,7 @@ export default () => {
         },
       });
 
-      res.json(user);
+      res.json(user.operations);
     } catch (err) {
       res.status(404).json({ result: false, error: err.message });
     }
@@ -44,8 +42,7 @@ export default () => {
 
   router.get('/:operation', async ({ operation }, res) => {
     try {
-      const { id } = operation;
-      const operations = await Operation.get(id).getJoin({
+      const operations = await operation.getJoin({
         user: true,
         registers: {
           bottles: true,
@@ -61,7 +58,7 @@ export default () => {
   router.post('/', async ({ userDocument, body }, res) => {
     try {
       const { bottles } = body;
-      const operation = await Operation.save();
+      const operation = await Operation.save({});
 
       bottles.map(bottle => registerBottle(bottle, operation));
 
