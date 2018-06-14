@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import _ from 'lodash';
 
 import Operation from '../models/operation';
 import Bottle from '../models/bottle';
@@ -26,8 +27,10 @@ async function getPoints({ id }) {
   });
 
   return operationDocument.registers.reduce((a, b) => {
-    const firstPoints = a.bottle.wheight * a.count;
-    const secondPoints = b.bottle.wheight * b.count;
+    const pointsForA = a.bottle.material === 'plastico' ? 1 : 2;
+    const pointsForB = b.bottle.material === 'plastico' ? 1 : 2;
+    const firstPoints = pointsForA * a.count;
+    const secondPoints = pointsForB * b.count;
     return firstPoints + secondPoints;
   });
 }
@@ -38,10 +41,19 @@ async function emitNewOperation({ id, name, cpf }, operation) {
   io.sockets.emit('operation', { id, operation });
 }
 
+function countBottles(bottles) {
+  const groupedBottles = _.countBy(bottles);
+
+  return _.map(groupedBottles, (count, id) => {
+    const bottle = { id, count };
+    return bottle;
+  });
+}
+
 export default () => {
   const router = Router({ mergeParams: true });
 
-  router.param('operation', (req, _, next, id) => {
+  router.param('operation', (req, _res, next, id) => {
     req.operation = Operation.get(id);
     next();
   });
@@ -79,8 +91,10 @@ export default () => {
 
   router.post('/', async ({ userDocument, body }, res) => {
     try {
-      const { bottles } = body;
+      let { bottles } = body;
       const operation = await Operation.save({});
+
+      bottles = countBottles(bottles);
 
       await Promise.all(bottles.map(bottle => registerBottle(bottle, operation)));
 
