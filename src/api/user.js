@@ -64,7 +64,7 @@ export default ({ config }) => {
       const user = await User.save(userDoc);
       res.json(user);
     } catch (err) {
-      res.status(404).json({ error: err.name });
+      res.status(404).json({ error: err.message });
     }
   });
 
